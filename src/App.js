@@ -14,6 +14,8 @@ const App = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [showPagination, setShowPagination] = useState(false);
 
+
+
   const handleSearch = async (searchQuery) => {
     setQuery(searchQuery);
     const { products, totalPages } = await fetchSearchResults(searchQuery, 1);
@@ -49,7 +51,8 @@ const App = () => {
         backgroundSize: "cover",
       }}
     >
-      <Header cartCount={cartCount} onSearch={handleSearch} />
+      <Header cartCount={cartCount} onSearch={handleSearch} searchQuery={query} />
+
       <HeroSection onCategoryClick={handleCategoryClick} />
       <ProductCards
         products={products}

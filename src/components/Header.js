@@ -1,31 +1,56 @@
-import React, { useState, useEffect } from "react";
-import { AppBar, Toolbar, Badge, IconButton, TextField, Box } from "@mui/material";
-import { ShoppingCart, Search, AccountCircle, Favorite } from "@mui/icons-material";
-import logo from "../assets/logo.png"; 
-import debounce from "lodash.debounce"; 
+import React, { useState, useEffect, useRef } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Badge,
+  IconButton,
+  TextField,
+  Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import { ShoppingCart, Search, AccountCircle, Favorite, Menu } from "@mui/icons-material";
+import logo from "../assets/logo.png";
+import debounce from "lodash.debounce";
 
-const Header = ({ cartCount, onSearch }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+const Header = ({ cartCount, onSearch, searchQuery }) => {
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || "");
+  
+  
+  const debouncedSearch = useRef(debounce((query) => {
+    onSearch(query);
+  }, 500)).current;
 
   
-  const debouncedSearch = debounce((query) => {
-    onSearch(query);
-  }, 500);
-
   const handleSearchChange = (e) => {
     const query = e.target.value;
-    setSearchQuery(query);
-    debouncedSearch(query);
+    setLocalSearchQuery(query);
+    debouncedSearch(query); 
   };
 
+  
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery || "");
+  }, [searchQuery]);
+
+  
   useEffect(() => {
     return () => {
       debouncedSearch.cancel();
     };
-  }, []);
+  }, [debouncedSearch]);
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  
+  const toggleDrawer = (open) => () => {
+    setIsDrawerOpen(open);
+  };
 
   return (
-    <AppBar position="fixed" sx={{ background: "#333", padding: "10px 0"}}>
+    <AppBar position="fixed" sx={{ background: "#333", padding: "10px 0" }}>
       <Toolbar
         sx={{
           display: "flex",
@@ -36,17 +61,17 @@ const Header = ({ cartCount, onSearch }) => {
        
         <Box component="img" src={logo} alt="Logo" sx={{ height: 50 }} />
 
-     
+        
         <TextField
           variant="outlined"
-          placeholder="Search for products..."
-          value={searchQuery}
+          placeholder="Search products..."
+          value={localSearchQuery}
           onChange={handleSearchChange}
           size="small"
           sx={{
             background: "#fff",
             borderRadius: 2,
-            width: "40%",
+            width: { xs: "50%", md: "40%" },
             input: { padding: "10px" },
           }}
           InputProps={{
@@ -54,8 +79,39 @@ const Header = ({ cartCount, onSearch }) => {
           }}
         />
 
+        
+        <Box sx={{ display: { xs: "block", md: "none" } }}>
+          <IconButton color="inherit" onClick={toggleDrawer(true)}>
+            <Menu />
+          </IconButton>
+          <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
+            <List>
+              <ListItem button>
+                <ListItemIcon>
+                  <Favorite />
+                </ListItemIcon>
+                <ListItemText primary="Favorites" />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <AccountCircle />
+                </ListItemIcon>
+                <ListItemText primary="Account" />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <Badge badgeContent={cartCount} color="secondary">
+                    <ShoppingCart />
+                  </Badge>
+                </ListItemIcon>
+                <ListItemText primary="Cart" />
+              </ListItem>
+            </List>
+          </Drawer>
+        </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+       
+        <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
           <IconButton color="inherit">
             <Favorite />
           </IconButton>

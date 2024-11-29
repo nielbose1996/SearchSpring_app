@@ -17,17 +17,18 @@ const ProductCards = ({
   totalPages,
   onPageChange,
   showPagination,
-  searchQuery, 
+  searchQuery,
 }) => {
   return (
     <Box
       sx={{
         margin: "20px auto",
-        maxWidth: "1200px",
+        width: "100%",
+        maxWidth: { xs: "95%", sm: "90%", md: "85%", lg: "1200px" },
         padding: "0 16px",
       }}
     >
-      
+     
       <Typography
         variant="h4"
         sx={{
@@ -38,45 +39,62 @@ const ProductCards = ({
         }}
       >
         {searchQuery
-          ? `Search Results for "${searchQuery}"`
+          ? products.length > 0
+            ? `Search Results for "${searchQuery}"`
+            : `No results found for "${searchQuery}"`
           : "Explore Our Products"}
       </Typography>
 
-      <Grid container spacing={3} sx={{ width: "100%", margin: "0 auto" }}>
+      
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          justifyContent: "center",
+        }}
+      >
         {products.map((product) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            lg={3}
+            key={product.id}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             <Card
               sx={{
-                height: "100%",
+                width: "100%",
+                maxWidth: "250px",
                 border: "1px solid #ddd",
-                borderRadius: "10px",
+                borderRadius: "8px",
                 overflow: "hidden",
                 background: "linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.7))",
                 color: "#fff",
                 boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
                 "&:hover": {
-                  transform: "scale(1.02)",
+                  transform: "scale(1.03)",
                   transition: "0.3s ease",
                   boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
-                },
-                "@media (max-width: 600px)": {
-                  margin: "0 auto", 
-                  width: "90%", 
                 },
               }}
             >
               <CardMedia
                 component="img"
-                height="200"
+                height="160"
                 image={product.thumbnailImageUrl || "https://via.placeholder.com/200"}
                 alt={product.name}
                 sx={{
-                  borderRadius: "8px",
+                  borderRadius: "8px 8px 0 0",
                 }}
               />
               <CardContent
                 sx={{
-                  padding: "16px",
+                  padding: "8px",
                   textAlign: "center",
                 }}
               >
@@ -86,6 +104,7 @@ const ProductCards = ({
                     fontWeight: "bold",
                     color: "#fff",
                     marginBottom: "8px",
+                    fontSize: "1rem",
                     textOverflow: "ellipsis",
                     overflow: "hidden",
                     whiteSpace: "nowrap",
@@ -96,7 +115,7 @@ const ProductCards = ({
                 <Typography
                   variant="body2"
                   color="#fff"
-                  sx={{ marginBottom: "8px" }}
+                  sx={{ marginBottom: "8px", fontSize: "0.875rem" }}
                 >
                   {product.msrp && product.msrp > product.price && (
                     <span style={{ textDecoration: "line-through", marginRight: 8 }}>
@@ -106,13 +125,15 @@ const ProductCards = ({
                   ${product.price}
                 </Typography>
               </CardContent>
-              <CardActions sx={{ justifyContent: "center" }}>
+              <CardActions sx={{ justifyContent: "center", padding: "8px" }}>
                 <Button
                   variant="contained"
                   onClick={onAddToCart}
                   sx={{
                     backgroundColor: "#ff5722",
                     fontWeight: "bold",
+                    fontSize: "0.875rem",
+                    padding: "6px 12px",
                     "&:hover": { backgroundColor: "#e64a19" },
                   }}
                 >
@@ -124,14 +145,16 @@ const ProductCards = ({
         ))}
       </Grid>
 
-      {/* Pagination */}
-      {showPagination && (
+     
+      {showPagination && products.length > 0 && ( 
         <Box
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             marginTop: "20px",
+            flexWrap: "wrap",
+            gap: { xs: 1, sm: 2 },
           }}
         >
           <Button
@@ -139,7 +162,9 @@ const ProductCards = ({
             disabled={currentPage === 1}
             onClick={() => onPageChange(currentPage - 1)}
             sx={{
-              marginRight: 2,
+              fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" },
+              padding: { xs: "6px 8px", sm: "8px 12px" },
+              marginRight: 1,
               fontWeight: "bold",
               color: "#ff5722",
               borderColor: "#ff5722",
@@ -162,6 +187,8 @@ const ProductCards = ({
                 variant={page === currentPage ? "contained" : "outlined"}
                 onClick={() => onPageChange(page)}
                 sx={{
+                  fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" },
+                  padding: { xs: "6px 8px", sm: "8px 12px" },
                   marginX: 1,
                   fontWeight: "bold",
                   ...(page === currentPage
@@ -187,7 +214,9 @@ const ProductCards = ({
             disabled={currentPage === totalPages}
             onClick={() => onPageChange(currentPage + 1)}
             sx={{
-              marginLeft: 2,
+              fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" },
+              padding: { xs: "6px 8px", sm: "8px 12px" },
+              marginLeft: 1,
               fontWeight: "bold",
               color: "#ff5722",
               borderColor: "#ff5722",
