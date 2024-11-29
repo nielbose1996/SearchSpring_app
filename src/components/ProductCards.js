@@ -17,7 +17,7 @@ const ProductCards = ({
   totalPages,
   onPageChange,
   showPagination,
-  searchQuery, // Pass the search query dynamically to display in the heading
+  searchQuery, 
 }) => {
   return (
     <Box
@@ -27,7 +27,7 @@ const ProductCards = ({
         padding: "0 16px",
       }}
     >
-      {/* Search Results Heading */}
+      
       <Typography
         variant="h4"
         sx={{
@@ -42,7 +42,7 @@ const ProductCards = ({
           : "Explore Our Products"}
       </Typography>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ width: "100%", margin: "0 auto" }}>
         {products.map((product) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
             <Card
@@ -58,6 +58,10 @@ const ProductCards = ({
                   transform: "scale(1.02)",
                   transition: "0.3s ease",
                   boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
+                },
+                "@media (max-width: 600px)": {
+                  margin: "0 auto", 
+                  width: "90%", 
                 },
               }}
             >
